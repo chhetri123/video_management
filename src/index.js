@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import CommentDetail from "./commentDetail";
+import CommentDetail from "./CommentDetail";
+import ApprovalCard from "./ApprovalCard";
 
 // class App extends React.Component {}
 
@@ -44,24 +45,32 @@ component Configuration -> we should ba able to configure a components when it i
 const App = () => {
   return (
     <>
-      <div className="ui container comments" style={{ fontSize: "35px" }}>
-        <CommentDetail
-          author="Manish Chhetri"
-          comment="Its is nice"
-          date={"Today 9:30 pm"}
-        />
-        <CommentDetail
-          author="Alex Chhetri"
-          comment="very good"
-          date={"yesterday 11:20pm"}
-        />
-        <CommentDetail
-          author="Mandip  poudel"
-          comment="I like it"
-          date={"Just now "}
-        />
+      <div className="ui container comments" style={{ fontSize: "25px" }}>
+        {/* passing child component  to a parent component*/}
+        <ApprovalCard>
+          <CommentDetail
+            author="Manish Chhetri" // Property name and value
+            comment="Its is nice"
+            date={"Today 9:30 pm"}
+          />
+        </ApprovalCard>
+        <ApprovalCard>
+          <CommentDetail
+            author="Alex Chhetri"
+            comment="very good"
+            date={"yesterday 11:20pm"}
+          />
+        </ApprovalCard>
+        <ApprovalCard>
+          <CommentDetail
+            author="Mandip  poudel"
+            comment="I like it"
+            date={"Just now "}
+          />
+        </ApprovalCard>
       </div>
     </>
   );
-};
+}
+
 ReactDOM.render(<App />, document.getElementById("root"));
