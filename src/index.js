@@ -1,28 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SeasonDisplay from "./SeasonDispaly";
+// import "semantic-ui-css/semantic.min.css";
+import SeasonDisplay from "./components/SeasonDisplay/SeasonDispaly";
+import Loader from "./components/Loader/Loader";
+import Error from "./components/Error/Error";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { lat: null, lng: null, errMessage: null };
+  state = { lat: null, errMessage: null };
 
+  componentDidMount() {
+    // This method runs when render method is rendred (content is rendred on screen )
+    // console.log("ComponentDid Mount ", this.state);
     window.navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      },
+      (pos) => this.setState({ lat: pos.coords.latitude }),
       (err) => this.setState({ errMessage: err.message })
     );
   }
-  render() {
+
+  //  this method runs when state is updated or component is updated .render menthod is called right before componentDipUpdate is invoked
+  componentDidUpdate() {
+    console.log("Component Did update", this.state);
+  }
+
+  // componentWillUnmount() {
+  //   console.log("Component Will Unmount");
+  // }
+
+  renderContent() {
     if (this.state.errMessage && !this.state.lat) {
-      return <h1>Error:{this.state.errMessage}</h1>;
+      return <Error msg={this.state.errMessage} />;
     }
     if (!this.state.errMessage && !this.state.lat) {
-      return <h1>Loading...</h1>;
+      return <Loader msg="Please allow the location to fetch data .." />;
     } else {
-      return <h1>Coordinates:{`${this.state.lat},${this.state.lng}`}</h1>;
+      return <SeasonDisplay lat={this.state.lat} />;
     }
+  }
+  render() {
+    return <div className="ui ">{this.renderContent()}</div>;
   }
 }
 
