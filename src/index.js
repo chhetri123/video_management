@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SeasonDisplay from "./SeasonDispaly";
 
 class App extends React.Component {
   constructor(props) {
