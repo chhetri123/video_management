@@ -1,7 +1,8 @@
 import React from "react";
-import SearchBar from "./SearchBar";
-import ImageList from "./ImageList";
+import SearchBar from "./SearchBar/SearchBar";
+import ImageList from "./ImageList/ImageList";
 import unsplash from "./../API/unsplash";
+import "./App.css";
 class App extends React.Component {
   state = { images: [], total: 0 };
   onSearchSubmit = async (term) => {
@@ -15,7 +16,10 @@ class App extends React.Component {
   };
   render() {
     return (
-      <div className="ui container" style={{ marginTop: "10px" }}>
+      <div
+        className="ui container"
+        style={{ marginTop: "20px", backGroundColor: "black" }}
+      >
         <SearchBar onSubmit={this.onSearchSubmit} />
 
         <ImageList images={this.state.images} totalIimage={this.state.total} />
