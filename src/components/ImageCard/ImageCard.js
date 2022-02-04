@@ -1,6 +1,6 @@
 import React from "react";
 import "./ImageCard.css";
-
+import Loader from "./../Loader/Loader";
 class ImageCard extends React.Component {
   constructor(props) {
     super(props);
@@ -18,14 +18,17 @@ class ImageCard extends React.Component {
     this.imageRef.current.addEventListener("load", this.setSpans);
   }
   render() {
+    const loder =
+      this.state.spans === 0 ? <Loader msg="Loading Image" size="small" /> : "";
     return (
       <>
         <div
           style={{
             gridRowEnd: `span ${this.state.spans}`,
-            boxShadow: " 10px 10px 16px #000000;",
+            boxShadow: "10px 10px 16px #000000",
           }}
         >
+          {loder}
           <img
             ref={this.imageRef}
             src={this.props.image.urls.regular}
