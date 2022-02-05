@@ -1,0 +1,24 @@
+.ui.comments .dividing.header {
+  color: white !important;
+}
+.ui.comments .dividing.header i {
+  font-size: 25px;
+  margin-top: -10px;
+  margin-left: 25px;
+}
+.ui.comments .avatar {
+  max-width: 60px;
+}
+
+.ui.comments .comment_avatar {
+  max-width: 45px;
+}
+.ui.comments .input {
+  width: 725px;
+  margin-left: -35px;
+}
+.ui.comments .comment_input {
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.37) !important;
+  border-radius: 0em !important;
+}

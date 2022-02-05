@@ -1,0 +1,16 @@
+.meta {
+  margin-top: 20px;
+}
+.grid.nav_container {
+  margin: -6px 0 10px -15px;
+  padding-bottom: 9px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.349);
+}
+.viewCount_date {
+  color: rgba(255, 255, 255, 0.582);
+  font-style: bold !important;
+  font-size: 15px;
+}
+.row .viewCount {
+  margin-right: 20px;
+}

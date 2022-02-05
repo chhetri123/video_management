@@ -1,0 +1,57 @@
+.item.grid.description_box {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.185);
+  padding-bottom: 10px;
+}
+.grid.description_box img {
+  max-width: 60px;
+  margin: -12px 0 0 -20px;
+}
+.subscriber_Number {
+  margin-top: -3px;
+  color: rgba(255, 255, 255, 0.582);
+  margin-bottom: 30px;
+}
+.grid .Subscription_box {
+  position: absolute;
+  top: -90px;
+  left: 75%;
+  font-size: 20px;
+}
+.grid .Subscription_box .subscribe {
+  font-size: 15px;
+  font-weight: 900;
+  padding: 8px 18px;
+  cursor: pointer;
+  background: red;
+}
+.grid .Subscription_box .subscribed {
+  font-size: 15px;
+  font-weight: 900;
+  padding: 8px 18px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.233);
+  color: #aaaaaa !important;
+}
+.grid .Subscription_box .subscription_bell {
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 20px;
+  transform: scale(1.3);
+  font-weight: 100;
+}
+.grid .video_description {
+  width: 69%;
+  margin-top: -50px;
+  margin-left: 48px;
+  line-height: 25px;
+  font-weight: 400;
+  font-size: 16px;
+}
+.grid .show_more {
+  color: #aaaaaa;
+  font-size: 13px;
+
+  font-weight: 100;
+  margin-top: 10px;
+  cursor: pointer;
+}

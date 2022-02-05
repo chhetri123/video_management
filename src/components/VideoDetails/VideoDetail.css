@@ -1,0 +1,14 @@
+.detailContent {
+  width: 100%;
+}
+.detailContent .header {
+  line-height: 2.6rem;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+.detailContent .meta .description {
+  line-height: 25px;
+  word-spacing: 3px;
+  color: wheat;
+  font-size: 18px;
+}
