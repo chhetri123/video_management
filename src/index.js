@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import CommentDetail from "./CommentDetail";
+import CommentDetail from "./commentDetail";
 import ApprovalCard from "./ApprovalCard";
 
 // class App extends React.Component {}
@@ -71,6 +71,6 @@ const App = () => {
       </div>
     </>
   );
-}
+};
 
 ReactDOM.render(<App />, document.getElementById("root"));
