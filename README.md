@@ -1,12 +1,8 @@
-# React-Projects
-This is youtube Search clone Project made through React js . I have used Youtube API to make this project 
+# React + Vite
 
-## Home Page 
-![image](https://user-images.githubusercontent.com/65161301/153759058-c299b02f-d1f8-4627-b8b4-10c5ce994843.png)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## UI when i Search
-![Screenshot 2022-02-13 204113](https://user-images.githubusercontent.com/65161301/153759112-6f7ecafd-2df0-4b99-8257-6f07181ec555.png)
+Currently, two official plugins are available:
 
-
-## UI When i Play video
-![image](https://user-images.githubusercontent.com/65161301/153759051-ba71c7ac-8b79-46f4-b5a7-39e5336a78ac.png)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
