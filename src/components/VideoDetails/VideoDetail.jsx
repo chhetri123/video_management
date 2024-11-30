@@ -64,10 +64,7 @@ const VideoDetail = ({ sidebarVideos, currentVideoIndex }) => {
 
   // Handle YouTube Player state changes
   const handlePlayerStateChange = (event) => {
-    console.log(sidebarVideos);
     if (event.data === window.YT.PlayerState.ENDED && autoplay) {
-      console.log(currentVideoIndex);
-      console.log(sidebarVideos.length);
       if (
         currentVideoIndex !== -1 &&
         currentVideoIndex < sidebarVideos.length

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useYoutube } from "../../context/YoutubeContext";
 import { formatViews } from "../Helper/helperStat";
+import { useNavigate } from "react-router-dom";
 
 const DescriptionBox = ({ video }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { channelDetails, fetchChannelInfo } = useYoutube();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (video?.snippet?.channelId) {
@@ -48,7 +50,14 @@ const DescriptionBox = ({ video }) => {
             </div>
           )}
           <div>
-            <h3 className="font-semibold">{video.snippet.channelTitle}</h3>
+            <h3
+              className="font-semibold cursor-pointer"
+              onClick={() => {
+                navigate(`/channel/${video.snippet.channelId}`);
+              }}
+            >
+              {video.snippet.channelTitle}
+            </h3>
             <div className="flex flex-col text-sm text-gray-400">
               <span>
                 {channelDetails &&

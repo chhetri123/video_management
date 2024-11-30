@@ -40,10 +40,10 @@ const UserChannel = () => {
         ...item,
         id: item.snippet.resourceId.videoId,
       }));
-
       setVideos((prev) =>
         isNextPage ? [...prev, ...formattedVideos] : formattedVideos
       );
+
       setNextPageToken(newNextPageToken);
       setHasMore(!!newNextPageToken);
       setLoading(false);
@@ -54,6 +54,7 @@ const UserChannel = () => {
   };
 
   const handleVideoClick = (video) => {
+    localStorage.setItem("videoSource", JSON.stringify(videos));
     navigate(`/video/${video.id}`);
   };
 

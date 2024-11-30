@@ -40,7 +40,6 @@ function VideoPage() {
         setSidebarVideos((prev) =>
           isNextPage ? [...prev, ...formattedItems] : formattedItems
         );
-        // console.log(sidebarVideos);
       } else if (showLiked) {
         response = await fetchLikedVideos(
           accessToken,
@@ -65,6 +64,14 @@ function VideoPage() {
   useEffect(() => {
     if (playlistId || showLiked) {
       loadSidebarVideos();
+    } else {
+      const videoSource = JSON.parse(
+        localStorage.getItem("videoSource") || "[]"
+      );
+
+      setSidebarVideos(videoSource);
+      setHasMore(false);
+      setNextPageToken(null);
     }
   }, [playlistId, showLiked, accessToken]);
 
@@ -95,12 +102,6 @@ function VideoPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-8">
         <div className="lg:col-span-3 lg:border-r lg:border-gray-700/50 lg:pr-8">
           {sidebarVideos.length > 0 && (
-            <VideoDetail
-              sidebarVideos={filteredSidebarVideos}
-              currentVideoIndex={currentVideoIndex}
-            />
-          )}
-          {searchParams.size === 0 && (
             <VideoDetail
               sidebarVideos={filteredSidebarVideos}
               currentVideoIndex={currentVideoIndex}
@@ -150,6 +151,7 @@ function VideoPage() {
             </InfiniteScroll>
           ) : (
             <VideoList
+              sidebarVideos={sidebarVideos}
               isRelatedVideos={true}
               onVideoSelect={handleSidebarVideoClick}
               currentVideoId={videoId}

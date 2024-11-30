@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import VideoItem from "../VideoItem/VideoItem";
 import VideoSkeleton from "../VideoItem/VideoSkeleton";
 import { useYoutube } from "../../context/YoutubeContext";
@@ -6,6 +6,7 @@ import InfiniteScroll from "../InfiniteScroll/InfiniteScroll";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const VideoList = ({
+  sidebarVideos,
   isRelatedVideos = false,
   onVideoSelect,
   currentVideoId,
@@ -20,6 +21,10 @@ const VideoList = ({
     loadMoreSearchResults,
     loadRecommendedVideos,
   } = useYoutube();
+  if (!sidebarVideos) {
+    localStorage.setItem("videoSource", JSON.stringify(videos));
+    sidebarVideos = videos;
+  }
 
   const loadMore = () => {
     if (isSearchPage) {
@@ -31,10 +36,10 @@ const VideoList = ({
 
   // Filter out the current video from related videos
   const filteredVideos = currentVideoId
-    ? videos.filter(
+    ? sidebarVideos.filter(
         (video) => (video.id?.videoId || video.id) !== currentVideoId
       )
-    : videos;
+    : sidebarVideos;
 
   const handleVideoClick = (video) => {
     if (onVideoSelect) {
@@ -62,7 +67,7 @@ const VideoList = ({
     );
   }
 
-  if (!videos || videos.length === 0) {
+  if (!sidebarVideos || sidebarVideos.length === 0) {
     return (
       <div className="text-center text-gray-400 mt-10">No videos found</div>
     );

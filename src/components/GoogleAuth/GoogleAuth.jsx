@@ -52,7 +52,6 @@ const GoogleAuthContent = () => {
 
         if (channelResponse.ok) {
           const channelData = await channelResponse.json();
-          console.log(channelData);
           if (channelData.items?.length > 0) {
             // use localstrograte to save the channel id
             localStorage.setItem("youtube_channel_id", channelData.items[0].id);
