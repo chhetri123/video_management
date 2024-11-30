@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { User, PlayCircle, ThumbsUp, LogOut } from "lucide-react"; // Import Lucide icons
+import { User, PlayCircle, ThumbsUp, LogOut, Users, Rss } from "lucide-react"; // Import Lucide icons
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -54,7 +54,8 @@ const GoogleAuthContent = () => {
           const channelData = await channelResponse.json();
           console.log(channelData);
           if (channelData.items?.length > 0) {
-            console.log(channelData.items);
+            // use localstrograte to save the channel id
+            localStorage.setItem("youtube_channel_id", channelData.items[0].id);
             setChannelInfo(channelData.items[0]);
           }
         }
@@ -80,9 +81,15 @@ const GoogleAuthContent = () => {
 
   const menuItems = [
     {
+      icon: <Rss size={18} />,
+      label: "Subscription Feed",
+      onClick: () => navigate("/feed/subscriptions"),
+    },
+    {
       icon: <User size={18} />,
       label: "My Channel",
-      onClick: () => navigate(`/channel/${channelInfo?.id}`),
+      onClick: () =>
+        navigate(`/channel/${localStorage.getItem("youtube_channel_id")}`),
     },
     {
       icon: <PlayCircle size={18} />,
@@ -93,6 +100,11 @@ const GoogleAuthContent = () => {
       icon: <ThumbsUp size={18} />,
       label: "Liked Videos",
       onClick: () => navigate("/liked-videos"),
+    },
+    {
+      icon: <Users size={18} />,
+      label: "Subscriptions",
+      onClick: () => navigate("/subscriptions"),
     },
     {
       icon: <LogOut size={18} />,

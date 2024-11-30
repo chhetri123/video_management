@@ -9,6 +9,8 @@ import UserPlaylists from "./pages/UserPlaylists";
 import LikedVideos from "./pages/LikedVideos";
 import ChannelPage from "./pages/ChannelPage";
 import PlaylistDetails from "./pages/PlaylistDetails";
+import Subscriptions from "./pages/Subscriptions";
+import SubscriptionFeed from "./pages/SubscriptionFeed";
 
 function App() {
   return (
@@ -17,7 +19,6 @@ function App() {
         <header className="bg-primary py-4 px-6 mb-6">
           <SearchBox />
         </header>
-
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -27,6 +28,8 @@ function App() {
             <Route path="/liked-videos" element={<LikedVideos />} />
             <Route path="/channel/:channelId" element={<ChannelPage />} />
             <Route path="/playlist/:playlistId" element={<PlaylistDetails />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/feed/subscriptions" element={<SubscriptionFeed />} />
           </Routes>
         </main>
       </div>

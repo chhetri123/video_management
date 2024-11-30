@@ -249,13 +249,20 @@ export const fetchPlaylistItems = async (
 };
 
 // Fetch user's channel information
-export const fetchUserChannel = async (accessToken) => {
+export const fetchUserChannel = async (accessToken, channelId) => {
+  // if channelId is null, fetch the user's own channel
+  let params = {
+    part: "snippet,statistics,contentDetails",
+  };
+  if (channelId) {
+    params.id = channelId;
+  } else {
+    params.mine = true;
+  }
+
   try {
     const response = await axios.get(`${BASE_URL}/channels`, {
-      params: {
-        part: "snippet,statistics,contentDetails",
-        mine: true,
-      },
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -264,6 +271,135 @@ export const fetchUserChannel = async (accessToken) => {
   } catch (error) {
     console.error("Error fetching user channel:", error);
     return null;
+  }
+};
+
+// Fetch user's subscriptions
+export const fetchUserSubscriptions = async (accessToken, pageToken = null) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/subscriptions`, {
+      params: {
+        part: "snippet,contentDetails",
+        mine: true,
+        maxResults: 20,
+        pageToken: pageToken,
+        order: "alphabetical",
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return {
+      items: response.data.items,
+      nextPageToken: response.data.nextPageToken,
+    };
+  } catch (error) {
+    console.error("Error fetching subscriptions:", error);
+    return { items: [], nextPageToken: null };
+  }
+};
+
+// Fetch user's uploaded videos
+export const fetchUserUploads = async (
+  accessToken,
+  playlistId,
+  pageToken = null
+) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/playlistItems`, {
+      params: {
+        part: "snippet,contentDetails",
+        playlistId: playlistId,
+        maxResults: 20,
+        pageToken: pageToken,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return {
+      items: response.data.items,
+      nextPageToken: response.data.nextPageToken,
+    };
+  } catch (error) {
+    console.error("Error fetching user uploads:", error);
+    return { items: [], nextPageToken: null };
+  }
+};
+
+// Fetch latest videos from subscribed channels
+export const fetchSubscriptionVideos = async (
+  accessToken,
+  pageToken = null
+) => {
+  try {
+    // Calculate date 2 days ago
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    const publishedAfter = twoDaysAgo.toISOString();
+
+    // First get subscriptions
+    const subsResponse = await axios.get(`${BASE_URL}/subscriptions`, {
+      params: {
+        part: "snippet",
+        mine: true,
+        maxResults: 10,
+        order: "relevance",
+        pageToken: pageToken,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!subsResponse.data.items?.length) {
+      return { items: [], nextPageToken: null };
+    }
+
+    // Get channel IDs
+    const channelIds = subsResponse.data.items.map(
+      (sub) => sub.snippet.resourceId.channelId
+    );
+
+    // Get latest videos from these channels
+    const videosResponse = await axios.get(`${BASE_URL}/search`, {
+      params: {
+        part: "snippet",
+        type: "video",
+        order: "date",
+        publishedAfter: publishedAfter,
+        maxResults: 20,
+        channelId: channelIds,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!videosResponse.data.items?.length) {
+      return { items: [], nextPageToken: subsResponse.data.nextPageToken };
+    }
+
+    // Get full video details
+    const videoIds = videosResponse.data.items.map((item) => item.id.videoId);
+    const detailsResponse = await axios.get(`${BASE_URL}/videos`, {
+      params: {
+        part: "snippet,statistics,contentDetails",
+        id: videoIds.join(","),
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return {
+      items: detailsResponse.data.items || [],
+      nextPageToken: subsResponse.data.nextPageToken,
+      channelIds,
+    };
+  } catch (error) {
+    console.error("Error fetching subscription videos:", error);
+    return { items: [], nextPageToken: null };
   }
 };
 
@@ -279,4 +415,7 @@ export default {
   fetchLikedVideos,
   fetchPlaylistItems,
   fetchUserChannel,
+  fetchUserSubscriptions,
+  fetchUserUploads,
+  fetchSubscriptionVideos,
 };
