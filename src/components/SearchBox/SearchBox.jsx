@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, X, History, Loader2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useYoutube } from "../../context/YoutubeContext";
+import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SearchBox = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -117,6 +118,9 @@ const SearchBox = () => {
             ))}
           </div>
         )}
+      </div>
+      <div className="flex">
+        <GoogleAuth />
       </div>
     </div>
   );

@@ -167,6 +167,106 @@ export const fetchRecommendedVideos = async (pageToken = null) => {
   }
 };
 
+// Fetch user's playlists
+export const fetchUserPlaylists = async (accessToken, pageToken = null) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/playlists`, {
+      params: {
+        part: "snippet,contentDetails",
+        mine: true,
+        maxResults: 20,
+        pageToken: pageToken,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return {
+      items: response.data.items,
+      nextPageToken: response.data.nextPageToken,
+    };
+  } catch (error) {
+    console.error("Error fetching playlists:", error);
+    return { items: [], nextPageToken: null };
+  }
+};
+
+// Fetch user's liked videos
+export const fetchLikedVideos = async (accessToken, pageToken = null) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/videos`, {
+      params: {
+        part: "snippet,statistics",
+        myRating: "like",
+        maxResults: 20,
+        pageToken: pageToken,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return {
+      items: response.data.items,
+      nextPageToken: response.data.nextPageToken,
+    };
+  } catch (error) {
+    console.error("Error fetching liked videos:", error);
+    return { items: [], nextPageToken: null };
+  }
+};
+
+// Fetch playlist items
+export const fetchPlaylistItems = async (
+  playlistId,
+  pageToken = null,
+  accessToken = null
+) => {
+  try {
+    const config = {
+      params: {
+        part: "snippet,contentDetails",
+        playlistId: playlistId,
+        maxResults: 20,
+        pageToken: pageToken,
+      },
+    };
+
+    if (accessToken) {
+      config.headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+    }
+
+    const response = await axios.get(`${BASE_URL}/playlistItems`, config);
+    return {
+      items: response.data.items,
+      nextPageToken: response.data.nextPageToken,
+    };
+  } catch (error) {
+    console.error("Error fetching playlist items:", error);
+    return { items: [], nextPageToken: null };
+  }
+};
+
+// Fetch user's channel information
+export const fetchUserChannel = async (accessToken) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/channels`, {
+      params: {
+        part: "snippet,statistics,contentDetails",
+        mine: true,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.items[0];
+  } catch (error) {
+    console.error("Error fetching user channel:", error);
+    return null;
+  }
+};
+
 export default {
   get: youtube.get.bind(youtube),
   fetchTrendingVideos,
@@ -175,4 +275,8 @@ export default {
   fetchComments,
   fetchChannelDetails,
   fetchRecommendedVideos,
+  fetchUserPlaylists,
+  fetchLikedVideos,
+  fetchPlaylistItems,
+  fetchUserChannel,
 };
