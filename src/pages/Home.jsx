@@ -15,7 +15,7 @@ function Home() {
         <h1 className="text-2xl font-bold text-white">Recommended</h1>
         <div className="flex-1 border-b border-gray-700"></div>
       </div>
-      <VideoList />
+      <VideoList isRelatedVideos={false} />
     </div>
   );
 }

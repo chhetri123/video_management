@@ -3,10 +3,15 @@ import VideoItem from "../VideoItem/VideoItem";
 import VideoSkeleton from "../VideoItem/VideoSkeleton";
 import { useYoutube } from "../../context/YoutubeContext";
 import InfiniteScroll from "../InfiniteScroll/InfiniteScroll";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const VideoList = ({ isRelatedVideos = false }) => {
+const VideoList = ({
+  isRelatedVideos = false,
+  onVideoSelect,
+  currentVideoId,
+}) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isSearchPage = location.pathname === "/search";
   const {
     videos,
@@ -15,11 +20,27 @@ const VideoList = ({ isRelatedVideos = false }) => {
     loadMoreSearchResults,
     loadRecommendedVideos,
   } = useYoutube();
+
   const loadMore = () => {
     if (isSearchPage) {
       loadMoreSearchResults();
     } else {
       loadRecommendedVideos(true);
+    }
+  };
+
+  // Filter out the current video from related videos
+  const filteredVideos = currentVideoId
+    ? videos.filter(
+        (video) => (video.id?.videoId || video.id) !== currentVideoId
+      )
+    : videos;
+
+  const handleVideoClick = (video) => {
+    if (onVideoSelect) {
+      onVideoSelect(video);
+    } else {
+      navigate(`/video/${video.id?.videoId || video.id}`);
     }
   };
 
@@ -50,13 +71,21 @@ const VideoList = ({ isRelatedVideos = false }) => {
   return (
     <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMore}>
       <div className={gridClassName}>
-        {videos.map((video) => (
-          <VideoItem key={video.id?.videoId || video.id} video={video} />
+        {filteredVideos.map((video, index) => (
+          <div
+            key={`${video.id?.videoId || video.id}-${index}`}
+            onClick={() => handleVideoClick(video)}
+            className="cursor-pointer"
+          >
+            <VideoItem video={video} isRelated={isRelatedVideos} />
+          </div>
         ))}
         {loading &&
-          skeletonArray
-            .slice(0, 3)
-            .map((_, index) => <VideoSkeleton key={`skeleton-${index}`} />)}
+          Array(3)
+            .fill(null)
+            .map((_, index) => (
+              <VideoSkeleton key={`loading-skeleton-${index}`} />
+            ))}
       </div>
     </InfiniteScroll>
   );

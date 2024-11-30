@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,20 @@ const GoogleAuthContent = () => {
   const [channelInfo, setChannelInfo] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -116,7 +130,7 @@ const GoogleAuthContent = () => {
           <span>Sign in with Google</span>
         </button>
       ) : (
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="flex items-center space-x-2 focus:outline-none"

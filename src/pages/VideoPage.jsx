@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import VideoDetail from "../components/VideoDetails/VideoDetail";
 import VideoList from "../components/VideoList/VideoList";
 import { useAuth } from "../context/AuthContext";
@@ -10,14 +10,16 @@ import InfiniteScroll from "../components/InfiniteScroll/InfiniteScroll";
 
 function VideoPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { videoId } = useParams();
+  const { accessToken } = useAuth();
   const playlistId = searchParams.get("playlist");
   const showLiked = searchParams.get("show") === "liked";
-  const { accessToken } = useAuth();
+
   const [sidebarVideos, setSidebarVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [nextPageToken, setNextPageToken] = useState(null);
-  const navigate = useNavigate();
 
   const loadSidebarVideos = async (isNextPage = false) => {
     if (!accessToken) return;
@@ -38,6 +40,7 @@ function VideoPage() {
         setSidebarVideos((prev) =>
           isNextPage ? [...prev, ...formattedItems] : formattedItems
         );
+        // console.log(sidebarVideos);
       } else if (showLiked) {
         response = await fetchLikedVideos(
           accessToken,
@@ -72,14 +75,37 @@ function VideoPage() {
     } else if (playlistId) {
       queryParams.set("playlist", playlistId);
     }
-    navigate(`/video/${video.id}?${queryParams.toString()}`);
+    const videoId =
+      video.id?.videoId || video.id || video.snippet?.resourceId?.videoId;
+    navigate(`/video/${videoId}?${queryParams.toString()}`);
   };
+
+  const filteredSidebarVideos = sidebarVideos.filter((video) => {
+    const sidebarVideoId =
+      video.id?.videoId || video.id || video.snippet?.resourceId?.videoId;
+    return sidebarVideoId !== videoId;
+  });
+  // find the current video in the sidebar videos
+  const currentVideoIndex = sidebarVideos.findIndex(
+    (video) => video.id === videoId
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-8">
         <div className="lg:col-span-3 lg:border-r lg:border-gray-700/50 lg:pr-8">
-          <VideoDetail />
+          {sidebarVideos.length > 0 && (
+            <VideoDetail
+              sidebarVideos={filteredSidebarVideos}
+              currentVideoIndex={currentVideoIndex}
+            />
+          )}
+          {searchParams.size === 0 && (
+            <VideoDetail
+              sidebarVideos={filteredSidebarVideos}
+              currentVideoIndex={currentVideoIndex}
+            />
+          )}
         </div>
         <div className="lg:col-span-1 lg:pl-4">
           <h2 className="text-xl font-semibold text-white mb-4">
@@ -97,9 +123,13 @@ function VideoPage() {
               className="space-y-4"
             >
               <div className="space-y-4">
-                {sidebarVideos.map((video) => (
+                {filteredSidebarVideos.map((video, index) => (
                   <div
-                    key={video.id}
+                    key={`sidebar-${
+                      video.id?.videoId ||
+                      video.id ||
+                      video.snippet?.resourceId?.videoId
+                    }-${index}`}
                     onClick={() => handleSidebarVideoClick(video)}
                     className="cursor-pointer hover:bg-gray-800/50 rounded-lg transition-colors"
                   >
@@ -114,12 +144,16 @@ function VideoPage() {
                   Array(3)
                     .fill(null)
                     .map((_, index) => (
-                      <VideoSkeleton key={`skeleton-${index}`} />
+                      <VideoSkeleton key={`sidebar-skeleton-${index}`} />
                     ))}
               </div>
             </InfiniteScroll>
           ) : (
-            <VideoList isRelatedVideos={true} />
+            <VideoList
+              isRelatedVideos={true}
+              onVideoSelect={handleSidebarVideoClick}
+              currentVideoId={videoId}
+            />
           )}
         </div>
       </div>
